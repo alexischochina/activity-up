@@ -5,6 +5,7 @@ export type Activite = {
     place_dispo: number;
     description: string;
     duree: number;
+
     level: number;
     user: number;
 };
