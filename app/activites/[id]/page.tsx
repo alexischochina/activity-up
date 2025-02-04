@@ -1,45 +1,80 @@
-"use server";
+"use client";
 
-import {Activite} from "@/types/Activite";
-import {getActivite} from "@/actions/GetActivite";
+import { Activite } from "@/types/Activite";
+import { useEffect, useState } from "react";
 import "@/styles/activites.css";
-import {getTypeActivite} from "@/actions/GetTypeActivite";
-import {TypeActivite} from "@/types/TypeActivite";
+import clsx from "clsx";
 
-export default async function findOneActivite({
-                                                  // Récupération des paramètres d'URL
-                                                  params,
-                                              }: {
-    // Typage des paramètres d'URL
-    params: Promise<{ id: number }>;
-}) {
-    // Récupération de l'id parmi les paramètres d'URL
-    const id = (await params).id;
-    // Appel de l'action
-    const response = await getActivite(id);
+export default function ActiviteDetail({ params }: { params: { id: string } }) {
+    const [activite, setActivite] = useState<Activite | null>(null);
+    const [error, setError] = useState("");
+    const [isReserved, setIsReserved] = useState(false);
 
-    if (!response.ok || response.status >= 300) {
-        // S'il y a une erreur
+    useEffect(() => {
+        fetchActivite();
+        checkReservation();
+    }, []);
+
+    const fetchActivite = async () => {
         try {
-            // On récupère le message d'erreur
-            const {message} = await response.json();
-            return <p>{message}</p>;
-        } catch (e) {
-            console.error(e);
+            const response = await fetch(`/api/activites/${params.id}`);
+            if (!response.ok) {
+                setError("Erreur lors du chargement de l'activité");
+                return;
+            }
+            const data = await response.json();
+            setActivite(data);
+        } catch (err) {
+            setError("Erreur lors du chargement de l'activité");
         }
-        // Si la récupération du message d'erreur à échoué,
-        // on affiche un message par défaut
-        return <p>Une erreur est survenue</p>;
+    };
+
+    const checkReservation = async () => {
+        try {
+            const response = await fetch(`/api/reservations/check/${params.id}`);
+            if (response.ok) {
+                const data = await response.json();
+                setIsReserved(data.isReserved);
+            }
+        } catch (err) {
+            console.error("Erreur lors de la vérification de la réservation:", err);
+        }
+    };
+
+    const handleReservation = async () => {
+        try {
+            const response = await fetch("/api/reservations", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ activiteId: Number(params.id) }),
+            });
+
+            if (!response.ok) {
+                const data = await response.json();
+                setError(data.message || "Erreur lors de la réservation");
+                return;
+            }
+
+            // Mettre à jour l'état de réservation et les informations de l'activité
+            setIsReserved(true);
+            fetchActivite();
+        } catch (err) {
+            setError("Erreur lors de la réservation");
+        }
+    };
+
+    if (!activite) {
+        return <div className="page-container">
+            <div className="content-box">
+                {error ? <div className="error-message">{error}</div> : "Chargement..."}
+            </div>
+        </div>;
     }
 
-    // On récupère l'utilisateur renvoyé par l'action
-    const activite: Activite = await response.json();
-
-    const respType = await getTypeActivite(activite.type_id)
-    const typeActivite: TypeActivite = await respType.json();
-
     return (
-        <div className='page-container'>
+        <div className="page-container">
             <div className="content-box">
                 <h1>{activite.nom}</h1>
                 <br/>
@@ -52,7 +87,19 @@ export default async function findOneActivite({
                 <br/>
                 <p className="activity-description">{activite.description}</p>
                 <br/>
-                <span className="activity-type">{typeActivite.nom}</span>
+                <span className="activity-type">{activite.type_nom}</span>
+                <br/>
+                <br/>
+                {error && <div className="error-message">{error}</div>}
+                <button
+                    onClick={handleReservation}
+                    className={clsx('reservation-button', {
+                        'reserved': isReserved
+                    })}
+                    disabled={activite.places_disponibles === 0 || isReserved}
+                >
+                    {isReserved ? "Réservé" : activite.places_disponibles > 0 ? "Réserver" : "Complet"}
+                </button>
             </div>
         </div>
     );

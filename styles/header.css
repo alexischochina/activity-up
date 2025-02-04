@@ -16,24 +16,29 @@
 .header-left {
     display: flex;
     gap: 20px;
+    align-items: center;
 }
 
 .nav-link {
-    color: #333;
+    color: #000000;
     text-decoration: none;
     padding: 5px 10px;
     border-radius: 4px;
     transition: all 0.2s ease;
+    height: 32px;  /* Hauteur fixe pour l'alignement */
+    display: flex;
+    align-items: center;
 }
 
-.nav-link:hover,
-.nav-link.active {
-    text-decoration: none;
+.nav-link:hover {
+    background-color: rgba(0, 102, 204, 0.1);
+    color: #0066cc;
 }
 
 .nav-link.active {
     color: white;
-    background-color: #0066cc;  /* Fond bleu pour l'onglet actif */
+    background-color: #0066cc;
+    border-bottom: none;  /* Retire le soulignement rouge */
 }
 
 .header-right {
@@ -78,4 +83,31 @@
 
 .login-button:hover {
     background-color: #5a6268;
-} 
+}
+
+.logo-link {
+    text-decoration: none;
+    padding: 5px 16px;  /* Réduit le padding vertical pour aligner avec les onglets */
+    background-color: #0066cc;
+    border-radius: 4px;  /* Même border-radius que les onglets */
+    transition: background-color 0.2s ease;
+    height: 32px;  /* Hauteur fixe pour aligner avec les onglets */
+    display: flex;
+    align-items: center;
+}
+
+.logo-link:hover {
+    background-color: #004999;
+}
+
+.logo-text {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: white;
+    letter-spacing: -0.5px;
+}
+
+.logo-highlight {
+    color: #e3f2fd;
+}
+

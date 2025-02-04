@@ -3,12 +3,16 @@
 import { useEffect, useState } from "react";
 import { User } from "@/types/User";
 import "@/styles/profile.css";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function MonCompte() {
     const [user, setUser] = useState<User | null>(null);
     const [error, setError] = useState("");
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState<User | null>(null);
+    const router = useRouter();
+    const { updateAuth } = useAuth();
 
     useEffect(() => {
         fetchUserInfo();
@@ -59,19 +63,34 @@ export default function MonCompte() {
         setFormData(prev => prev ? { ...prev, [name]: value } : null);
     };
 
+    const handleDeleteAccount = async () => {
+        if (!confirm("Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible.")) {
+            return;
+        }
+
+        try {
+            const response = await fetch("/api/user/delete", {
+                method: "DELETE",
+            });
+
+            if (!response.ok) {
+                const data = await response.json();
+                setError(data.message || "Erreur lors de la suppression du compte");
+                return;
+            }
+
+            updateAuth(false, false);
+            router.push("/");
+        } catch (err) {
+            setError("Erreur lors de la suppression du compte");
+        }
+    };
+
     return (
         <div className="profile-container">
             <div className="profile-box">
                 <div className="profile-header">
                     <h1 className="profile-title">Mon Compte</h1>
-                    {!isEditing && (
-                        <button
-                            onClick={() => setIsEditing(true)}
-                            className="edit-button"
-                        >
-                            Modifier
-                        </button>
-                    )}
                 </div>
 
                 {error && <div className="error-message">{error}</div>}
@@ -137,6 +156,23 @@ export default function MonCompte() {
                             </button>
                         </div>
                     </form>
+                ) : null}
+
+                {!isEditing && user ? (
+                    <div className="button-group">
+                        <button
+                            onClick={() => setIsEditing(true)}
+                            className="edit-button"
+                        >
+                            Modifier
+                        </button>
+                        <button
+                            onClick={handleDeleteAccount}
+                            className="delete-button"
+                        >
+                            Supprimer mon compte
+                        </button>
+                    </div>
                 ) : null}
             </div>
         </div>
