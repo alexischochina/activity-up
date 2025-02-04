@@ -44,7 +44,7 @@ export default function LoginForm() {
                     updateAuth(true, data.role === "admin");
                     
                     if (pathname.startsWith("/login")) {
-                        router.push("/mon-compte"); // Redirect to /mon-compte page
+                        router.push("/"); // Redirect to /mon-compte page
                     }
                     router.refresh(); // Keep this page
                 }

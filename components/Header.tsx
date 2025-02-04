@@ -7,6 +7,7 @@ import { logout } from "@/utils/sessions";
 import "@/styles/header.css";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import Image from "next/image";
 
 export default function Header() {
     const router = useRouter();
@@ -27,6 +28,9 @@ export default function Header() {
         <nav className="header">
             <div className="header-container">
                 <div className="header-left">
+                    <Link href="/" className="logo-link">
+                        <span className="logo-text">Activity<span className="logo-highlight">Up</span></span>
+                    </Link>
                     <Link
                         href="/activites"
                         className={`nav-link ${pathname === "/activites" ? "active" : ""}`}
@@ -47,6 +51,14 @@ export default function Header() {
                             className={`nav-link ${pathname.includes("/admin/activites") ? "active" : ""}`}
                         >
                             Gestion des activités
+                        </Link>
+                    )}
+                    {isLoggedIn && (
+                        <Link
+                            href="/mes-reservations"
+                            className={`nav-link ${pathname === "/mes-reservations" ? "active" : ""}`}
+                        >
+                            Mes réservations
                         </Link>
                     )}
                 </div>

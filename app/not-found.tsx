@@ -1,11 +1,24 @@
 import Link from "next/link";
+import "@/styles/not-found.css";
 
 export default function NotFound() {
     return (
-        <main>
-            <h2>404 Not Found</h2>
-            <p>Page introuvable.</p>
-            <Link href="/mon-compte">Retour sur mon compte</Link>
-        </main>
+        <div className="not-found-container">
+            <div className="not-found-content">
+                <h1>
+                    <span className="error-code">404</span>
+                    <span className="error-text">Page non trouvée</span>
+                </h1>
+                <p>Désolé, la page que vous recherchez n'existe pas.</p>
+                <div className="actions">
+                    <Link href="/" className="home-button">
+                        Retour à l'accueil
+                    </Link>
+                    <Link href="/activites" className="activities-button">
+                        Voir les activités
+                    </Link>
+                </div>
+            </div>
+        </div>
     );
 }

@@ -16,14 +16,15 @@
 
 .page-header {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
+    gap: 20px;
     margin-bottom: 30px;
 }
 
 .page-header h1 {
     font-size: 24px;
     color: #333;
+    margin: 0;
 }
 
 .search-box {
@@ -130,8 +131,52 @@
     cursor: not-allowed;
 }
 
+.reservation-button.reserved {
+    background-color: #6c757d;
+    cursor: not-allowed;
+}
+
+.reservation-button.reserved:hover {
+    background-color: #6c757d;
+}
+
 .error-message {
     color: #dc3545;
     text-align: center;
     margin-bottom: 20px;
-} 
+}
+
+.filters {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.type-filter {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    background-color: white;
+    color: #333;
+    min-width: 200px;
+    cursor: pointer;
+}
+
+.type-filter:focus {
+    outline: none;
+    border-color: #0066cc;
+}
+
+@media (max-width: 768px) {
+    .filters {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .search-box,
+    .type-filter {
+        width: 100%;
+    }
+}
+
