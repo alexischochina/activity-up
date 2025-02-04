@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Header from "@/components/Header";
 
 export const metadata: Metadata = {
-    title: "Activity Up - Mon compte",
+    title: "Mon compte - Activity Up",
     description: "Description de la page mon compte",
 };
 

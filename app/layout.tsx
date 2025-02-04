@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Activity Up",
-  description: "Match Up mais pour les activités en gros",
+  description: "Retrouvez toutes les activités disponibles près de chez vous",
 };
 
 interface RootLayoutProps {

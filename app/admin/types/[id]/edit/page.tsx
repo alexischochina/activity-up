@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import "@/styles/admin.css";
 
 interface TypeActivite {
@@ -9,33 +9,35 @@ interface TypeActivite {
     nom: string;
 }
 
-export default function EditType({ params }: { params: { id: string } }) {
+export default function EditType() {
     const [nom, setNom] = useState("");
     const [error, setError] = useState("");
     const router = useRouter();
+    const params = useParams();
+    const id = params.id;
 
     useEffect(() => {
         const fetchType = async () => {
             try {
-                const response = await fetch(`/api/admin/types/${params.id}`);
+                const response = await fetch(`/api/admin/types/${id}`);
                 if (!response.ok) {
                     setError("Erreur lors du chargement du type");
                     return;
                 }
                 const data = await response.json();
                 setNom(data.nom);
-            } catch (err) {
+            } catch {
                 setError("Erreur lors du chargement du type");
             }
         };
 
         fetchType();
-    }, [params.id]);
+    }, [id]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const response = await fetch(`/api/admin/types/${params.id}`, {
+            const response = await fetch(`/api/admin/types/${id}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
@@ -49,7 +51,7 @@ export default function EditType({ params }: { params: { id: string } }) {
             }
 
             router.push("/admin/activites");
-        } catch (err) {
+        } catch {
             setError("Erreur lors de la modification");
         }
     };
@@ -90,4 +92,4 @@ export default function EditType({ params }: { params: { id: string } }) {
             </div>
         </div>
     );
-} 
+}

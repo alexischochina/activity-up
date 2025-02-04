@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import "@/styles/admin.css";
 
 interface TypeActivite {
@@ -19,7 +19,7 @@ interface Activite {
     duree: number;
 }
 
-export default function EditActivite({ params }: { params: { id: string } }) {
+export default function EditActivite() {
     const [types, setTypes] = useState<TypeActivite[]>([]);
     const [formData, setFormData] = useState<Activite>({
         id: 0,
@@ -32,6 +32,8 @@ export default function EditActivite({ params }: { params: { id: string } }) {
     });
     const [error, setError] = useState("");
     const router = useRouter();
+    const params = useParams();
+    const id = params.id;
 
     useEffect(() => {
         const fetchData = async () => {
@@ -46,17 +48,17 @@ export default function EditActivite({ params }: { params: { id: string } }) {
                 setTypes(typesData);
 
                 // Charger l'activité
-                const activiteResponse = await fetch(`/api/admin/activites/${params.id}`);
+                const activiteResponse = await fetch(`/api/admin/activites/${id}`);
                 if (!activiteResponse.ok) {
                     setError("Erreur lors du chargement de l'activité");
                     return;
                 }
                 const activiteData = await activiteResponse.json();
-                
+
                 // Formater la date pour l'input datetime-local
                 const date = new Date(activiteData.datetime_debut);
                 const formattedDate = date.toISOString().slice(0, 16);
-                
+
                 setFormData({
                     ...activiteData,
                     datetime_debut: formattedDate
@@ -67,7 +69,7 @@ export default function EditActivite({ params }: { params: { id: string } }) {
         };
 
         fetchData();
-    }, [params.id]);
+    }, [id]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -80,7 +82,7 @@ export default function EditActivite({ params }: { params: { id: string } }) {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const response = await fetch(`/api/admin/activites/${params.id}`, {
+            const response = await fetch(`/api/admin/activites/${id}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
@@ -209,4 +211,4 @@ export default function EditActivite({ params }: { params: { id: string } }) {
             </div>
         </div>
     );
-} 
+}
