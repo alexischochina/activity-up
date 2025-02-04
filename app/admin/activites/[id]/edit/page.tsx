@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import "@/styles/admin.css";
 
@@ -63,7 +63,7 @@ export default function EditActivite() {
                     ...activiteData,
                     datetime_debut: formattedDate
                 });
-            } catch (err) {
+            } catch {
                 setError("Erreur lors du chargement des données");
             }
         };
@@ -101,7 +101,7 @@ export default function EditActivite() {
             }
 
             router.push("/admin/activites");
-        } catch (err) {
+        } catch {
             setError("Erreur lors de la modification");
         }
     };
@@ -110,14 +110,14 @@ export default function EditActivite() {
         <div className="admin-container">
             <div className="admin-box">
                 <div className="admin-header">
-                    <h1>Modifier l'activité</h1>
+                    <h1>Modifier l&#39;activité</h1>
                 </div>
 
                 {error && <div className="error-message">{error}</div>}
 
                 <form onSubmit={handleSubmit} className="admin-form">
                     <div className="form-group">
-                        <label htmlFor="nom">Nom de l'activité</label>
+                        <label htmlFor="nom">Nom de l&#39;activité</label>
                         <input
                             type="text"
                             id="nom"
@@ -129,7 +129,7 @@ export default function EditActivite() {
                     </div>
 
                     <div className="form-group">
-                        <label htmlFor="type_id">Type d'activité</label>
+                        <label htmlFor="type_id">Type d&#39;activité</label>
                         <select
                             id="type_id"
                             name="type_id"

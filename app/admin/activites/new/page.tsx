@@ -35,7 +35,7 @@ export default function NewActivite() {
             }
             const data = await response.json();
             setTypes(data);
-        } catch (err) {
+        } catch {
             setError("Erreur lors du chargement des types d'activités");
         }
     };
@@ -70,7 +70,7 @@ export default function NewActivite() {
             }
 
             router.push("/admin/activites");
-        } catch (err) {
+        } catch {
             setError("Erreur lors de la création de l'activité");
         }
     };
@@ -86,7 +86,7 @@ export default function NewActivite() {
 
                 <form onSubmit={handleSubmit} className="admin-form">
                     <div className="form-group">
-                        <label htmlFor="nom">Nom de l'activité</label>
+                        <label htmlFor="nom">Nom de l&#39;activité</label>
                         <input
                             type="text"
                             id="nom"
@@ -98,7 +98,7 @@ export default function NewActivite() {
                     </div>
 
                     <div className="form-group">
-                        <label htmlFor="type_id">Type d'activité</label>
+                        <label htmlFor="type_id">Type d&#39;activité</label>
                         <select
                             id="type_id"
                             name="type_id"

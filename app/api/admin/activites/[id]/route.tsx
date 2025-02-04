@@ -36,8 +36,12 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
         }
 
         return NextResponse.json(activite);
-    } catch (error: any) {
-        return NextResponse.json({ message: error.message }, { status: 500 });
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            return NextResponse.json({ message: error.message }, { status: 500 });
+        }
+
+        return NextResponse.json({ message: "Une erreur inconnue est survenue" }, { status: 500 });
     } finally {
         if (db) await db.close();
     }
@@ -65,8 +69,12 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
         );
 
         return NextResponse.json({ success: true });
-    } catch (error: any) {
-        return NextResponse.json({ message: error.message }, { status: 500 });
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            return NextResponse.json({ message: error.message }, { status: 500 });
+        }
+
+        return NextResponse.json({ message: "Une erreur inconnue est survenue" }, { status: 500 });
     } finally {
         if (db) await db.close();
     }
@@ -98,8 +106,12 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
 
         await db.run("DELETE FROM activites WHERE rowid = ?", params.id);
         return NextResponse.json({ success: true });
-    } catch (error: any) {
-        return NextResponse.json({ message: error.message }, { status: 500 });
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            return NextResponse.json({ message: error.message }, { status: 500 });
+        }
+
+        return NextResponse.json({ message: "Une erreur inconnue est survenue" }, { status: 500 });
     } finally {
         if (db) await db.close();
     }

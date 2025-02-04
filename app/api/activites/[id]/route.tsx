@@ -37,9 +37,12 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
         }
 
         return NextResponse.json(activite);
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Erreur détaillée:", error);
-        return NextResponse.json({ message: error.message }, { status: 500 });
+        if (error instanceof Error) {
+            return NextResponse.json({ message: error.message }, { status: 500 });
+        }
+        return NextResponse.json({ message: "Une erreur inconnue est survenue" }, { status: 500 });
     } finally {
         if (db) await db.close();
     }

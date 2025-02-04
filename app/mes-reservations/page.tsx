@@ -31,7 +31,7 @@ export default function MesReservations() {
             }
             const data = await response.json();
             setReservations(data);
-        } catch (err) {
+        } catch {
             setError("Erreur lors du chargement des réservations");
         }
     };
@@ -52,7 +52,7 @@ export default function MesReservations() {
             }
 
             fetchReservations();
-        } catch (err) {
+        } catch {
             setError("Erreur lors de l'annulation de la réservation");
         }
     };
@@ -66,7 +66,7 @@ export default function MesReservations() {
 
                 {reservations.length === 0 ? (
                     <div className="no-reservations">
-                        <p>Vous n'avez pas encore de réservations.</p>
+                        <p>Vous n&#39;avez pas encore de réservations.</p>
                         <Link href="/activites" className="no-reservations-link">
                             Découvrir les activités
                         </Link>

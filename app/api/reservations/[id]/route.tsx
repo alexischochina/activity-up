@@ -44,9 +44,13 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
         await db.run("COMMIT");
 
         return NextResponse.json({ success: true });
-    } catch (error: any) {
-        if (db) await db.run("ROLLBACK");
-        return NextResponse.json({ message: error.message }, { status: 500 });
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            console.error("Erreur serveur:", error);
+            if (db) await db.run("ROLLBACK");
+            return NextResponse.json({ message: error.message }, { status: 500 });
+        }
+        return NextResponse.json({ message: "Une erreur inconnue est survenue" }, { status: 500 });
     } finally {
         if (db) await db.close();
     }

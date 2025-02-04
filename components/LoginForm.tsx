@@ -80,7 +80,7 @@ export default function LoginForm() {
                 </button>
                 <div className="auth-link">
                     <Link href="/register">
-                        Pas encore de compte ? S'inscrire
+                        Pas encore de compte ? S&#39;inscrire
                     </Link>
                 </div>
             </form>

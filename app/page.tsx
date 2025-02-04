@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import styles from "./page.module.css";
 
@@ -26,7 +25,7 @@ export default function Home() {
                     <div className={styles.feature}>
                         <div className={styles.featureIcon}>🎯</div>
                         <h3>Activités Variées</h3>
-                        <p>Sports, loisirs, bien-être : trouvez l'activité qui vous correspond</p>
+                        <p>Sports, loisirs, bien-être : trouvez l&#39;activité qui vous correspond</p>
                     </div>
                     <div className={styles.feature}>
                         <div className={styles.featureIcon}>📅</div>
@@ -52,7 +51,7 @@ export default function Home() {
                         <div className={styles.step}>
                             <div className={styles.stepNumber}>2</div>
                             <h3>Choisissez</h3>
-                            <p>Parcourez notre catalogue d'activités</p>
+                            <p>Parcourez notre catalogue d&#39;activités</p>
                         </div>
                         <div className={styles.step}>
                             <div className={styles.stepNumber}>3</div>

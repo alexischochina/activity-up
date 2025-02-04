@@ -1,14 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import "@/styles/admin.css";
-
-interface TypeActivite {
-    id: number;
-    nom: string;
-}
-
 export default function EditType() {
     const [nom, setNom] = useState("");
     const [error, setError] = useState("");
@@ -60,7 +54,7 @@ export default function EditType() {
         <div className="admin-container">
             <div className="admin-box">
                 <div className="admin-header">
-                    <h1>Modifier le type d'activité</h1>
+                    <h1>Modifier le type d&#39;activité</h1>
                 </div>
 
                 {error && <div className="error-message">{error}</div>}

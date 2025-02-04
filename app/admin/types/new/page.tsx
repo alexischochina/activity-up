@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import "@/styles/admin.css";
 
@@ -26,7 +26,7 @@ export default function NewTypeActivite() {
             }
 
             router.push("/admin/activites");
-        } catch (err) {
+        } catch {
             setError("Erreur lors de la création du type d'activité");
         }
     };
@@ -35,7 +35,7 @@ export default function NewTypeActivite() {
         <div className="admin-container">
             <div className="admin-box">
                 <div className="admin-header">
-                    <h1>Nouveau type d'activité</h1>
+                    <h1>Nouveau type d&#39;activité</h1>
                 </div>
 
                 {error && <div className="error-message">{error}</div>}

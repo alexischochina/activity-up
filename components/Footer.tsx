@@ -7,7 +7,7 @@ export default function Footer() {
             <div className="footer-container">
                 <div className="footer-section">
                     <h3>Activity Up</h3>
-                    <p>La plateforme de réservation d'activités qui vous simplifie la vie</p>
+                    <p>La plateforme de réservation d&#39;activités qui vous simplifie la vie</p>
                 </div>
                 
                 <div className="footer-section">

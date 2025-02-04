@@ -28,7 +28,7 @@ export default function MonCompte() {
             const data = await response.json();
             setUser(data);
             setFormData(data);
-        } catch (err) {
+        } catch {
             setError("Erreur lors du chargement des informations");
         }
     };
@@ -53,7 +53,7 @@ export default function MonCompte() {
             setUser(updatedUser);
             setIsEditing(false);
             setError("");
-        } catch (err) {
+        } catch {
             setError("Erreur lors de la mise à jour");
         }
     };
@@ -81,7 +81,7 @@ export default function MonCompte() {
 
             updateAuth(false, false);
             router.push("/");
-        } catch (err) {
+        } catch {
             setError("Erreur lors de la suppression du compte");
         }
     };

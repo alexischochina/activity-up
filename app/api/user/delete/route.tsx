@@ -4,7 +4,7 @@ import { open } from "sqlite";
 import sqlite3 from "sqlite3";
 import { logout } from "@/utils/sessions";
 
-export async function DELETE(req: Request) {
+export async function DELETE() {
     let db = null;
     try {
         const session = await getSession();
@@ -35,12 +35,12 @@ export async function DELETE(req: Request) {
         await logout();
 
         return NextResponse.json({ success: true });
-    } catch (error: any) {
-        console.error("Erreur lors de la suppression du compte:", error);
-        return NextResponse.json(
-            { message: "Erreur lors de la suppression du compte" },
-            { status: 500 }
-        );
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            return NextResponse.json({ message: error.message }, { status: 500 });
+        }
+
+        return NextResponse.json({ message: "Une erreur inconnue est survenue" }, { status: 500 });
     } finally {
         if (db) await db.close();
     }

@@ -1,11 +1,13 @@
 "use client";
 
 import { Activite } from "@/types/Activite";
-import { useEffect, useState } from "react";
+import { useEffect, useState, use } from "react";
 import "@/styles/activites.css";
 import clsx from "clsx";
 
-export default function ActiviteDetail({ params }: { params: { id: string } }) {
+export default function ActiviteDetail({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = use(params); // Unwrap params correctly
+
     const [activite, setActivite] = useState<Activite | null>(null);
     const [error, setError] = useState("");
     const [isReserved, setIsReserved] = useState(false);
@@ -17,21 +19,21 @@ export default function ActiviteDetail({ params }: { params: { id: string } }) {
 
     const fetchActivite = async () => {
         try {
-            const response = await fetch(`/api/activites/${params.id}`);
+            const response = await fetch(`/api/activites/${id}`);
             if (!response.ok) {
                 setError("Erreur lors du chargement de l'activité");
                 return;
             }
             const data = await response.json();
             setActivite(data);
-        } catch (err) {
+        } catch {
             setError("Erreur lors du chargement de l'activité");
         }
     };
 
     const checkReservation = async () => {
         try {
-            const response = await fetch(`/api/reservations/check/${params.id}`);
+            const response = await fetch(`/api/reservations/check/${id}`);
             if (response.ok) {
                 const data = await response.json();
                 setIsReserved(data.isReserved);
@@ -48,7 +50,7 @@ export default function ActiviteDetail({ params }: { params: { id: string } }) {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ activiteId: Number(params.id) }),
+                body: JSON.stringify({ activiteId: Number(id) }),
             });
 
             if (!response.ok) {
@@ -57,44 +59,45 @@ export default function ActiviteDetail({ params }: { params: { id: string } }) {
                 return;
             }
 
-            // Mettre à jour l'état de réservation et les informations de l'activité
             setIsReserved(true);
             fetchActivite();
-        } catch (err) {
+        } catch {
             setError("Erreur lors de la réservation");
         }
     };
 
     if (!activite) {
-        return <div className="page-container">
-            <div className="content-box">
-                {error ? <div className="error-message">{error}</div> : "Chargement..."}
+        return (
+            <div className="page-container">
+                <div className="content-box">
+                    {error ? <div className="error-message">{error}</div> : "Chargement..."}
+                </div>
             </div>
-        </div>;
+        );
     }
 
     return (
         <div className="page-container">
             <div className="content-box">
                 <h1>{activite.nom}</h1>
-                <br/>
+                <br />
                 <div className="time-container">
                     <span>{new Date(activite.datetime_debut).toLocaleString()}</span>
                     <span>{activite.duree} minutes</span>
                 </div>
-                <br/>
+                <br />
                 <div>{activite.places_disponibles} {activite.places_disponibles > 1 ? "places disponibles" : "place disponible"}</div>
-                <br/>
+                <br />
                 <p className="activity-description">{activite.description}</p>
-                <br/>
+                <br />
                 <span className="activity-type">{activite.type_nom}</span>
-                <br/>
-                <br/>
+                <br />
+                <br />
                 {error && <div className="error-message">{error}</div>}
                 <button
                     onClick={handleReservation}
-                    className={clsx('reservation-button', {
-                        'reserved': isReserved
+                    className={clsx("reservation-button", {
+                        reserved: isReserved,
                     })}
                     disabled={activite.places_disponibles === 0 || isReserved}
                 >

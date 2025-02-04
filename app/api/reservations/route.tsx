@@ -70,18 +70,24 @@ export async function POST(req: Request) {
         transactionStarted = false;
 
         return NextResponse.json({ success: true });
-    } catch (error: any) {
+    } catch (error: unknown) {
         if (db && transactionStarted) {
             await db.run("ROLLBACK");
         }
+
         console.error("Erreur détaillée:", error);
-        return NextResponse.json({ message: error.message }, { status: 500 });
+
+        if (error instanceof Error) {
+            return NextResponse.json({ message: error.message }, { status: 500 });
+        }
+
+        return NextResponse.json({ message: "Une erreur inconnue est survenue" }, { status: 500 });
     } finally {
         if (db) await db.close();
     }
 }
 
-export async function GET(req: Request) {
+export async function GET() {
     let db = null;
     try {
         const session = await getSession();
@@ -110,8 +116,12 @@ export async function GET(req: Request) {
         `, session.rowid);
 
         return NextResponse.json(reservations);
-    } catch (error: any) {
-        return NextResponse.json({ message: error.message }, { status: 500 });
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            return NextResponse.json({ message: error.message }, { status: 500 });
+        }
+
+        return NextResponse.json({ message: "Une erreur inconnue est survenue" }, { status: 500 });
     } finally {
         if (db) await db.close();
     }

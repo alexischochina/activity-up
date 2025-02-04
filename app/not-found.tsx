@@ -9,10 +9,10 @@ export default function NotFound() {
                     <span className="error-code">404</span>
                     <span className="error-text">Page non trouvée</span>
                 </h1>
-                <p>Désolé, la page que vous recherchez n'existe pas.</p>
+                <p>Désolé, la page que vous recherchez n&#39;existe pas.</p>
                 <div className="actions">
                     <Link href="/" className="home-button">
-                        Retour à l'accueil
+                        Retour à l&#39;accueil
                     </Link>
                     <Link href="/activites" className="activities-button">
                         Voir les activités

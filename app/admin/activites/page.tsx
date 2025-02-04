@@ -39,7 +39,7 @@ export default function AdminActivites() {
             }
             const data = await response.json();
             setTypes(data);
-        } catch (err) {
+        } catch {
             setError("Erreur lors du chargement des types d'activités");
         }
     };
@@ -53,7 +53,7 @@ export default function AdminActivites() {
             }
             const data = await response.json();
             setActivites(data);
-        } catch (err) {
+        } catch {
             setError("Erreur lors du chargement des activités");
         }
     };
@@ -75,7 +75,7 @@ export default function AdminActivites() {
             }
 
             setTypes(types.filter(type => type.id !== id));
-        } catch (err) {
+        } catch {
             setError("Erreur lors de la suppression");
         }
     };
@@ -97,7 +97,7 @@ export default function AdminActivites() {
             }
 
             setActivites(activites.filter(activite => activite.id !== id));
-        } catch (err) {
+        } catch {
             setError("Erreur lors de la suppression");
         }
     };
@@ -111,7 +111,7 @@ export default function AdminActivites() {
                         onClick={() => router.push("/admin/types/new")}
                         className="admin-button"
                     >
-                        Nouveau type d'activité
+                        Nouveau type d&#39;activité
                     </button>
                     <button 
                         onClick={() => router.push("/admin/activites/new")}
@@ -125,7 +125,7 @@ export default function AdminActivites() {
             {error && <div className="error-message">{error}</div>}
 
             <div className="admin-section">
-                <h2>Types d'activités</h2>
+                <h2>Types d&#39;activités</h2>
                 <table className="admin-table">
                     <thead>
                         <tr>

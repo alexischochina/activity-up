@@ -81,11 +81,19 @@ export async function POST(req: Request) {
             id: result.lastID,
             nom: nom.trim()
         });
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Erreur détaillée:", error);
-        console.error("Stack trace:", error.stack);
+
+        if (error instanceof Error) {
+            console.error("Stack trace:", error.stack);
+            return NextResponse.json(
+                { message: "Erreur serveur", details: error.message, stack: error.stack },
+                { status: 500 }
+            );
+        }
+
         return NextResponse.json(
-            { message: "Erreur serveur", details: error.message, stack: error.stack },
+            { message: "Erreur serveur", details: "Une erreur inconnue est survenue" },
             { status: 500 }
         );
     } finally {
@@ -115,12 +123,12 @@ export async function GET() {
         const types = await db.all("SELECT rowid as id, nom FROM type_activite");
 
         return NextResponse.json(types);
-    } catch (error: any) {
-        console.error(error);
-        return NextResponse.json(
-            { message: "Erreur serveur" },
-            { status: 500 }
-        );
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            return NextResponse.json({ message: error.message }, { status: 500 });
+        }
+
+        return NextResponse.json({ message: "Une erreur inconnue est survenue" }, { status: 500 });
     }
 }
 
@@ -154,8 +162,12 @@ export async function DELETE(req: Request) {
 
         await db.run("DELETE FROM type_activite WHERE rowid = ?", id);
         return NextResponse.json({ success: true });
-    } catch (error: any) {
-        return NextResponse.json({ message: error.message }, { status: 500 });
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            return NextResponse.json({ message: error.message }, { status: 500 });
+        }
+
+        return NextResponse.json({ message: "Une erreur inconnue est survenue" }, { status: 500 });
     } finally {
         if (db) await db.close();
     }
@@ -183,8 +195,12 @@ export async function PATCH(req: Request) {
         );
 
         return NextResponse.json({ success: true });
-    } catch (error: any) {
-        return NextResponse.json({ message: error.message }, { status: 500 });
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            return NextResponse.json({ message: error.message }, { status: 500 });
+        }
+
+        return NextResponse.json({ message: "Une erreur inconnue est survenue" }, { status: 500 });
     } finally {
         if (db) await db.close();
     }

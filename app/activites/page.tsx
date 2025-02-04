@@ -28,7 +28,7 @@ export default function Activites() {
             }
             const data = await response.json();
             setActivites(data);
-        } catch (err) {
+        } catch {
             setError("Erreur lors du chargement des activités");
         }
     };
@@ -42,33 +42,10 @@ export default function Activites() {
             }
             const data = await response.json();
             setTypes(data);
-        } catch (err) {
+        } catch {
             setError("Erreur lors du chargement des types d'activités");
         }
     };
-
-    const handleReservation = async (activiteId: number) => {
-        try {
-            const response = await fetch("/api/reservations", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ activiteId }),
-            });
-
-            if (!response.ok) {
-                const data = await response.json();
-                setError(data.message || "Erreur lors de la réservation");
-                return;
-            }
-
-            fetchActivites();
-        } catch (err) {
-            setError("Erreur lors de la réservation");
-        }
-    };
-
     const filteredActivites = activites.filter((activite) => {
         const matchesSearch = activite.nom.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesType = selectedType === "all" || activite.type_id.toString() === selectedType;

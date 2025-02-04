@@ -81,12 +81,12 @@ export async function POST(req: Request) {
         );
 
         return NextResponse.json(newActivite);
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Erreur détaillée:", error);
-        return NextResponse.json(
-            { message: "Erreur serveur", details: error.message },
-            { status: 500 }
-        );
+        if (error instanceof Error) {
+            return NextResponse.json({message: error.message}, {status: 500});
+        }
+        return NextResponse.json({message: "Une erreur inconnue est survenue"}, {status: 500});
     } finally {
         if (db) {
             await db.close();
@@ -126,12 +126,14 @@ export async function GET() {
         `);
 
         return NextResponse.json(activites);
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Erreur détaillée:", error);
-        return NextResponse.json(
-            { message: "Erreur serveur", details: error.message },
-            { status: 500 }
-        );
+
+        if (error instanceof Error) {
+            return NextResponse.json({message: error.message}, {status: 500});
+        }
+
+        return NextResponse.json({message: "Une erreur inconnue est survenue"}, {status: 500});
     } finally {
         if (db) {
             await db.close();
@@ -169,8 +171,12 @@ export async function DELETE(req: Request) {
 
         await db.run("DELETE FROM activites WHERE rowid = ?", id);
         return NextResponse.json({ success: true });
-    } catch (error: any) {
-        return NextResponse.json({ message: error.message }, { status: 500 });
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            return NextResponse.json({ message: error.message }, { status: 500 });
+        }
+
+        return NextResponse.json({ message: "Une erreur inconnue est survenue" }, { status: 500 });
     } finally {
         if (db) await db.close();
     }
@@ -201,8 +207,12 @@ export async function PATCH(req: Request) {
         );
 
         return NextResponse.json({ success: true });
-    } catch (error: any) {
-        return NextResponse.json({ message: error.message }, { status: 500 });
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            return NextResponse.json({ message: error.message }, { status: 500 });
+        }
+
+        return NextResponse.json({ message: "Une erreur inconnue est survenue" }, { status: 500 });
     } finally {
         if (db) await db.close();
     }

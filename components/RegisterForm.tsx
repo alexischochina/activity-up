@@ -103,7 +103,7 @@ export default function RegisterForm() {
                         type="submit"
                         className="submit-button"
                     >
-                        S'inscrire
+                        S&#39;inscrire
                     </button>
                 </div>
                 <div className="auth-link">

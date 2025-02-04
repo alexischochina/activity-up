@@ -5,9 +5,7 @@ import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { logout } from "@/utils/sessions";
 import "@/styles/header.css";
-import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import Image from "next/image";
 
 export default function Header() {
     const router = useRouter();

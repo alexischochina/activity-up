@@ -22,9 +22,12 @@ export async function POST() {
         `);
 
         return NextResponse.json({ message: "Table réinitialisée avec succès" });
-    } catch (error: any) {
-        console.error("Erreur lors de la réinitialisation de la table:", error);
-        return NextResponse.json({ message: error.message }, { status: 500 });
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            return NextResponse.json({ message: error.message }, { status: 500 });
+        }
+
+        return NextResponse.json({ message: "Une erreur inconnue est survenue" }, { status: 500 });
     } finally {
         if (db) await db.close();
     }
