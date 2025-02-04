@@ -9,30 +9,8 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { firstname, lastname, email, password } = body;
 
-    // Call register function (see below)
-    const response = await register(firstname, lastname, email, password);
-
-    // If response is false
-    if (response == false) {
-        // Return an appropriate error message
-        return NextResponse.json(
-            { message: "User already exists" },
-            { status: 403 }
-        );
-    }
-
-    return NextResponse.json({ response });
-}
-
-async function register(
-    firstname: string,
-    lastname: string,
-    email: string,
-    password: string
-) {
     let db = null;
 
-    // Check if the database instance has been initialized
     if (!db) {
         // If the database instance is not initialized, open the database connection
         db = await open({
@@ -42,16 +20,20 @@ async function register(
     }
 
     // Verify that the user does not exist yet
-    const verif = `SELECT email FROM users WHERE email = ?`;
+    const verif = `SELECT rowid FROM users WHERE email = ?`;
     const userVerif = await db.get(verif, email);
 
     if (userVerif) {
-        return false;
+        // Return an appropriate error message
+        return NextResponse.json(
+            { message: "Cet email est déjà utilisé" },
+            { status: 403 }
+        );
     }
 
-    // Insert the new user
-    const sql = `INSERT INTO users (firstname, lastname, email, pwd) VALUES (?, ?, ?, ?)`;
-    const insert = await db.get(sql, firstname, lastname, email, password);
+    // Insert the new user with default role "user"
+    const sql = `INSERT INTO users(firstname, lastname, email, pwd, role) VALUES(?, ?, ?, ?, ?)`;
+    const userAdd = await db.run(sql, firstname, lastname, email, password, "admin");
 
-    return insert;
+    return NextResponse.json(userAdd);
 }

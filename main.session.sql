@@ -1,24 +1,27 @@
 CREATE TABLE IF NOT EXISTS users (
   firstname VARCHAR(255) NOT NULL,
   lastname VARCHAR(255) NOT NULL,
-  email VARCHAR(255) NOT NULL,
+  email VARCHAR(255) NOT NULL UNIQUE,
   pwd VARCHAR(255) NOT NULL,
+  role VARCHAR(20) NOT NULL DEFAULT 'user',
   registration DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
-CREATE TABLE IF NOT EXISTS type_activite (
-  activitie_name VARCHAR(255) NOT NULL
+DROP TABLE IF EXISTS type_activite;
+CREATE TABLE type_activite (
+    nom VARCHAR(255) NOT NULL UNIQUE
 );
-CREATE TABLE IF NOT EXISTS activites (
-  activite_name VARCHAR(255) NOT NULL,
-  type_id REFERENCES type_activite(ROWID),
-  places_disponibles INT NOT NULL,
-  activite_description VARCHAR(255) NOT NULL,
-  datetime_debut DATETIME NOT NULL,
-  durée INT NOT NULL
+DROP TABLE IF EXISTS activites;
+CREATE TABLE activites (
+    nom VARCHAR(255) NOT NULL,
+    type_id INTEGER REFERENCES type_activite(ROWID),
+    places_disponibles INTEGER NOT NULL,
+    description TEXT NOT NULL,
+    datetime_debut DATETIME NOT NULL,
+    duree INTEGER NOT NULL
 );
 CREATE TABLE IF NOT EXISTS reservations (
-  user_id REFERENCES users(ROWID),
-  activitie_id REFERENCES activites(ROWID),
+  user_id INTEGER REFERENCES users(ROWID),
+  activite_id INTEGER REFERENCES activites(ROWID),
   date_reservation DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   etat BOOLEAN NOT NULL DEFAULT TRUE
 );

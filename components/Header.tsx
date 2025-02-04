@@ -2,31 +2,67 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import clsx from "clsx";
 import { useRouter } from "next/navigation";
 import { logout } from "@/utils/sessions";
+import "@/styles/header.css";
+import { useEffect, useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function Header() {
     const router = useRouter();
+    const pathname = usePathname();
+    const { isAdmin, isLoggedIn, updateAuth } = useAuth();
 
-    const Logout = () => {
-        logout(); // Destroy the cookie
-        return router.push("/login"); // redirect to login page
+    const handleLogout = async () => {
+        try {
+            await logout();
+            updateAuth(false, false);
+            router.push("/login");
+        } catch (error) {
+            console.error("Erreur lors de la déconnexion:", error);
+        }
     };
 
-    const pathname = usePathname();
-
     return (
-        <nav>
-            <Link
-                href="/mon-compte"
-                className={clsx("", {
-                    active: pathname === "/mon-compte",
-                })}
-            >
-                Mon compte
-            </Link>
-            <button onClick={Logout}>Logout</button>
+        <nav className="header">
+            <div className="header-container">
+                <div className="header-left">
+                    <Link
+                        href="/activites"
+                        className={`nav-link ${pathname === "/activites" ? "active" : ""}`}
+                    >
+                        Activités
+                    </Link>
+                    {isLoggedIn && (
+                        <Link
+                            href="/mon-compte"
+                            className={`nav-link ${pathname === "/mon-compte" ? "active" : ""}`}
+                        >
+                            Mon compte
+                        </Link>
+                    )}
+                    {isAdmin && (
+                        <Link
+                            href="/admin/activites"
+                            className={`nav-link ${pathname.includes("/admin/activites") ? "active" : ""}`}
+                        >
+                            Gestion des activités
+                        </Link>
+                    )}
+                </div>
+                <div className="header-right">
+                    {isAdmin && <span className="admin-tag">Admin</span>}
+                    {isLoggedIn ? (
+                        <button onClick={handleLogout} className="logout-button">
+                            Déconnexion
+                        </button>
+                    ) : (
+                        <Link href="/login" className="login-button">
+                            Connexion
+                        </Link>
+                    )}
+                </div>
+            </div>
         </nav>
     );
 }
