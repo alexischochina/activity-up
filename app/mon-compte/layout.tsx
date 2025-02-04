@@ -13,7 +13,6 @@ export default function CompteLayout({
 }>) {
     return (
         <main>
-            <Header />
             {children}
         </main>
     );

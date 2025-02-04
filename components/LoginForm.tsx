@@ -3,11 +3,14 @@
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { FormEvent } from "react";
+import Link from "next/link";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function LoginForm() {
     const [error, setError] = useState(<></>);
     const router = useRouter();
     const pathname = usePathname();
+    const { updateAuth } = useAuth();
 
     const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault(); // Prevent default form submission
@@ -36,6 +39,10 @@ export default function LoginForm() {
                     const { message } = await response.json();
                     setError(<p>{message}</p>);
                 } else {
+                    const data = await response.json();
+                    // Mise à jour du contexte avec le rôle correct
+                    updateAuth(true, data.role === "admin");
+                    
                     if (pathname.startsWith("/login")) {
                         router.push("/mon-compte"); // Redirect to /mon-compte page
                     }
@@ -51,20 +58,33 @@ export default function LoginForm() {
     return (
         <>
             <form method="POST" onSubmit={handleLogin}>
-                <label htmlFor="email">Email : </label>
-                <input
-                    type="email"
-                    name="email"
-                    id="email"
-                    placeholder="john.doe@gmail.com"
-                />
-                <br />
-                <label htmlFor="password">Password : </label>
-                <input type="password" name="password" id="password" />
-                <br />
-                <input type="submit" name="login" value="Login" />
+                <div className="form-group">
+                    <label htmlFor="email">Email</label>
+                    <input
+                        type="email"
+                        name="email"
+                        id="email"
+                        placeholder="john.doe@gmail.com"
+                    />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="password">Mot de passe</label>
+                    <input 
+                        type="password" 
+                        name="password" 
+                        id="password"
+                    />
+                </div>
+                <button type="submit" className="submit-button">
+                    Se connecter
+                </button>
+                <div className="auth-link">
+                    <Link href="/register">
+                        Pas encore de compte ? S'inscrire
+                    </Link>
+                </div>
             </form>
-            {error && error}
+            {error && <div className="error-message">{error}</div>}
         </>
     );
 }
