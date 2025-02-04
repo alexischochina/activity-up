@@ -1,4 +1,5 @@
 export interface Activite {
+    type_id: number;
     id: number;
     nom: string;
     type_nom: string;

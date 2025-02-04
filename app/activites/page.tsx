@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { Activite } from "../../types/Activite";
 import "@/styles/activites.css";
+import clsx from "clsx";
+import Link from "next/link";
 
 export default function Activites() {
     const [activites, setActivites] = useState<Activite[]>([]);
@@ -79,19 +81,24 @@ export default function Activites() {
                                 <span className="activity-type">{activite.type_nom}</span>
                             </div>
                             <div className="activity-details">
-                                <p className="activity-description">{activite.description}</p>
                                 <div className="activity-info">
                                     <span>Places : {activite.places_disponibles}</span>
                                     <span>Date : {new Date(activite.datetime_debut).toLocaleString()}</span>
                                     <span>Durée : {activite.duree} minutes</span>
                                 </div>
                             </div>
+                            <Link href={`/activites/${activite.id}`} className={clsx('reservation-button', {
+                                disabled: activite.places_disponibles === 0,
+                            })}>
+                                {activite.places_disponibles > 0 ? "Plus d'infos" : "Complet"}
+                            </Link>
+
                             <button
                                 onClick={() => handleReservation(activite.id)}
                                 className="reservation-button"
                                 disabled={activite.places_disponibles === 0}
                             >
-                                {activite.places_disponibles > 0 ? "Réserver" : "Complet"}
+                                {activite.places_disponibles > 0 ? "Plus d'infos" : "Complet"}
                             </button>
                         </div>
                     ))}
