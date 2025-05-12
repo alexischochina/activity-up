@@ -19,9 +19,17 @@ export async function addActivite(activite_name: string, activite_level: string)
 
     // Get the logged user
     const session = await getSession();
+
+    if(!session){
+        return NextResponse.json(
+            { message: "You are not logged in" },
+            { status: 403 }
+        );
+    }
+
     // Check if the user already have this activite
     const verifSql = "SELECT rowid FROM activites WHERE activite_name = ? AND user = ?";
-    const verif = await db.get(verifSql, activite_name, session.rowid);
+    const verif = await db.get(verifSql, activite_name, session?.rowid);
 
     if (verif) {
         return NextResponse.json(

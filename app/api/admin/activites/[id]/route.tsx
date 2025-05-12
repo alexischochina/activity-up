@@ -3,7 +3,9 @@ import { NextResponse } from "next/server";
 import { open } from "sqlite";
 import sqlite3 from "sqlite3";
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(req: Request, { params }: { params: Promise<{ id: number }> }) {
+    const id = (await params).id;
+
     let db = null;
     try {
         const session = await getSession();
@@ -25,8 +27,10 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
                 duree
             FROM activites 
             WHERE rowid = ?`,
-            params.id
+            id
         );
+
+        console.log("activite", activite);
 
         if (!activite) {
             return NextResponse.json(
@@ -47,7 +51,8 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
     }
 }
 
-export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+export async function PATCH(req: Request, { params }: { params: Promise<{ id: number }> }) {
+    const id = (await params).id;
     let db = null;
     try {
         const session = await getSession();
@@ -65,7 +70,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
             SET nom = ?, type_id = ?, places_disponibles = ?, 
                 description = ?, datetime_debut = ?, duree = ?
             WHERE rowid = ?`,
-            [nom, type_id, places_disponibles, description, datetime_debut, duree, params.id]
+            [nom, type_id, places_disponibles, description, datetime_debut, duree, id]
         );
 
         return NextResponse.json({ success: true });
@@ -80,7 +85,8 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
     }
 }
 
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(req: Request, { params }: { params: Promise<{ id: number }> }) {
+    const id = (await params).id;
     let db = null;
     try {
         const session = await getSession();
@@ -94,7 +100,7 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
         // Vérifier s'il y a des réservations
         const reservations = await db.get(
             "SELECT COUNT(*) as count FROM reservations WHERE activite_id = ?",
-            params.id
+            id
         );
 
         if (reservations.count > 0) {
@@ -104,7 +110,7 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
             );
         }
 
-        await db.run("DELETE FROM activites WHERE rowid = ?", params.id);
+        await db.run("DELETE FROM activites WHERE rowid = ?", id);
         return NextResponse.json({ success: true });
     } catch (error: unknown) {
         if (error instanceof Error) {

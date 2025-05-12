@@ -3,7 +3,14 @@ import { NextResponse } from "next/server";
 import { open } from "sqlite";
 import sqlite3 from "sqlite3";
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function POST(req: Request,
+                           {
+                               params,
+                           }: {
+                               params: Promise<{ id: string }>;
+                           }) {
+
+    const id = (await params).id;
     let db = null;
     try {
         const session = await getSession();
@@ -27,7 +34,9 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
             FROM activites a
             LEFT JOIN type_activite t ON t.rowid = a.type_id
             WHERE a.rowid = ?
-        `, params.id);
+        `, id);
+
+        console.log(activite)
 
         if (!activite) {
             return NextResponse.json(

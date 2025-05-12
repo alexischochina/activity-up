@@ -3,7 +3,8 @@ import { NextResponse } from "next/server";
 import { open } from "sqlite";
 import sqlite3 from "sqlite3";
 
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
+    const id = (await params).id;
     let db = null;
     try {
         const session = await getSession();
@@ -17,7 +18,7 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
         // Vérifier que la réservation appartient à l'utilisateur
         const reservation = await db.get(
             "SELECT activite_id FROM reservations WHERE rowid = ? AND user_id = ? AND etat = 1",
-            [params.id, session.rowid]
+            [id, session.rowid]
         );
 
         if (!reservation) {
@@ -32,7 +33,7 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
         // Mettre à jour l'état de la réservation
         await db.run(
             "UPDATE reservations SET etat = 0 WHERE rowid = ?",
-            params.id
+            id
         );
 
         // Remettre à jour le nombre de places disponibles

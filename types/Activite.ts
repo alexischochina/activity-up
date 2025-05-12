@@ -7,4 +7,5 @@ export interface Activite {
     datetime_debut: string;
     description: string;
     duree: number;
+    rowid: number;
 } 

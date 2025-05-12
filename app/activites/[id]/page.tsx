@@ -1,25 +1,25 @@
 "use client";
 
 import { Activite } from "@/types/Activite";
-import { useEffect, useState, use } from "react";
+import { useEffect, useState } from "react";
 import "@/styles/activites.css";
 import clsx from "clsx";
 
-export default function ActiviteDetail({ params }: { params: Promise<{ id: string }> }) {
-    const { id } = use(params); // Unwrap params correctly
+export default function ActiviteDetail({ params }: { params: Promise<{ id: number }>}) {
+    const [id, setId] = useState<number | null>(null)
+    const getId = async () => {
+        const { id } = await params; // Unwrap params correctly
+        setId(id)
+    }
 
     const [activite, setActivite] = useState<Activite | null>(null);
     const [error, setError] = useState("");
     const [isReserved, setIsReserved] = useState(false);
 
-    useEffect(() => {
-        fetchActivite();
-        checkReservation();
-    }, []);
 
     const fetchActivite = async () => {
         try {
-            const response = await fetch(`/api/activites/${id}`);
+            const response = await fetch(`/api/activites/${id}`, { method: "POST" });
             if (!response.ok) {
                 setError("Erreur lors du chargement de l'activité");
                 return;
@@ -33,7 +33,7 @@ export default function ActiviteDetail({ params }: { params: Promise<{ id: strin
 
     const checkReservation = async () => {
         try {
-            const response = await fetch(`/api/reservations/check/${id}`);
+            const response = await fetch(`/api/reservations/check/${id}`, { method : "POST"});
             if (response.ok) {
                 const data = await response.json();
                 setIsReserved(data.isReserved);
@@ -42,7 +42,16 @@ export default function ActiviteDetail({ params }: { params: Promise<{ id: strin
             console.error("Erreur lors de la vérification de la réservation:", err);
         }
     };
+    useEffect(() => {
+        getId();
+    }, []);
 
+    useEffect(() => {
+        if(id) {
+            fetchActivite();
+            checkReservation();
+        }
+    }, [id]);
     const handleReservation = async () => {
         try {
             const response = await fetch("/api/reservations", {

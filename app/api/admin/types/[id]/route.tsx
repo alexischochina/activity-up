@@ -3,7 +3,8 @@ import { NextResponse } from "next/server";
 import { open } from "sqlite";
 import sqlite3 from "sqlite3";
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
+    const id = (await params).id;
     let db = null;
     try {
         const session = await getSession();
@@ -16,7 +17,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
 
         const type = await db.get(
             "SELECT rowid as id, nom FROM type_activite WHERE rowid = ?",
-            params.id
+            id
         );
 
         if (!type) {
@@ -38,7 +39,8 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
     }
 }
 
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
+    const id = (await params).id;
     let db = null;
     try {
         const session = await getSession();
@@ -52,7 +54,7 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
         // Vérifier si le type est utilisé dans des activités
         const activitesLiees = await db.get(
             "SELECT COUNT(*) as count FROM activites WHERE type_id = ?",
-            params.id
+            id
         );
 
         if (activitesLiees.count > 0) {
@@ -62,7 +64,7 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
             );
         }
 
-        await db.run("DELETE FROM type_activite WHERE rowid = ?", params.id);
+        await db.run("DELETE FROM type_activite WHERE rowid = ?", id);
         return NextResponse.json({ success: true });
     } catch (error: unknown) {
         if (error instanceof Error) {
@@ -75,7 +77,8 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
     }
 }
 
-export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
+    const id = (await params).id;
     let db = null;
     try {
         const session = await getSession();
@@ -90,7 +93,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
 
         await db.run(
             "UPDATE type_activite SET nom = ? WHERE rowid = ?",
-            [nom, params.id]
+            [nom, id]
         );
 
         return NextResponse.json({ success: true });

@@ -3,7 +3,8 @@ import { NextResponse } from "next/server";
 import { open } from "sqlite";
 import sqlite3 from "sqlite3";
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
+    const id = (await params).id;
     let db = null;
     try {
         const session = await getSession();
@@ -16,7 +17,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
 
         const reservation = await db.get(
             "SELECT rowid FROM reservations WHERE user_id = ? AND activite_id = ? AND etat = 1",
-            [session.rowid, params.id]
+            [session.rowid, id]
         );
 
         return NextResponse.json({ isReserved: !!reservation });

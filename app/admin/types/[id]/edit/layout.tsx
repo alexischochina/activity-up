@@ -1,10 +1,10 @@
-import { Metadata } from "next";
+
 import React from "react";
 import { getActivite } from "@/actions/GetActivite";
 import { Activite } from "@/types/Activite";
 
-export async function generateMetadata({ params }: { params: { id: number } }): Promise<Metadata> {
-    const id = params.id;
+export async function generateMetadata({ params }: { params : Promise<{ id : number }>}) {
+    const id = (await params).id;
     const response = await getActivite(id);
 
     if (!response.ok || response.status >= 300) {
